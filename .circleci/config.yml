@@ -9,8 +9,11 @@ jobs:
           version: 20.10.7 
           docker_layer_caching: true
       - run:
+          name: start testcontainers
+          command: mvn testcontainers:start    
+      - run:
           name: Build
-          command: mvn clean install
+          command: mvn clean package
       - run:
           name: Build Image
           command: docker build .
