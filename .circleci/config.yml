@@ -10,7 +10,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: Build
-          command: mvn clean 
+          command: mvn clean install
       - run:
           name: Build Image
           command: docker build .
