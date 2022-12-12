@@ -10,11 +10,18 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
+        
           version: 20.10.2 
           docker_layer_caching: true 
       - run:
-          name: mongodb containerup
-          command: docker run -d -p 27017:27017 --name mongo_db mongo:latest    
+                  name: Setup Environment Variables
+                  command: |
+                      echo "export TESTCONTAINERS_HOST_OVERRIDE=localhost" \
+                        >> $BASH_ENV
+      - run:
+                  name: Testcontainers tunnel
+                  background: true
+                  command: .circleci/autoforward.py        
       - run:
           name: Build
           command: mvn clean install -Dmaven.test.skip=true
@@ -23,7 +30,7 @@ jobs:
           command: docker build .   
       - run:
           name: Test
-          command: mvn test -Dtest=!TodoRepositoryTest
+          command: mvn test
           
 
 # Invoke jobs via workflows
