@@ -13,7 +13,7 @@ jobs:
           command: docker run -d -p 27017:27017 --name mongo_db mongo:latest    
       - run:
           name: Build
-          command: mvn clean package
+          command: mvn clean install -Dmaven.test.skip=true
       - run:
           name: Build Image
           command: docker build .   
