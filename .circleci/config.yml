@@ -6,14 +6,8 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-        
           version: 20.10.2 
           docker_layer_caching: true 
-      - run:
-                  name: Setup Environment Variables
-                  command: |
-                      echo "export TESTCONTAINERS_HOST_OVERRIDE=localhost" \
-                        >> $BASH_ENV
       - run:
           name: Build
           command: mvn clean install -Dmaven.test.skip=true
@@ -22,13 +16,10 @@ jobs:
           command: docker build .   
       - run:
           name: Test
-          command: mvn test
+          command: mvn test -Dtest=!TodoRepositoryTest
           
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  sample:
     jobs:
       - build-and-test
