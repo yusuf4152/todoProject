@@ -3,6 +3,10 @@ jobs:
   build-and-test:
     docker:
       - image: cimg/openjdk:11.0
+      - image: mongo:4.4.3
+
+
+
     steps:
       - checkout
       - setup_remote_docker:
@@ -19,7 +23,7 @@ jobs:
           command: docker build .   
       - run:
           name: Test
-          command: mvn test
+          command: mvn test -Dtest=!TodoRepositoryTest
           
 
 # Invoke jobs via workflows
