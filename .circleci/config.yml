@@ -12,7 +12,7 @@ executors:
      architecture: "amd64"
      platform: "linux/amd64"
 jobs:
-  build-test-project:
+  build-project:
     executor: docker-executor 
     steps:
       - checkout
@@ -25,7 +25,7 @@ jobs:
       - run:
           name: Build Image
           command: docker build .
-  maven-test:
+  test-project:
       executor: machine-executor
       steps:
          - checkout
@@ -35,5 +35,6 @@ jobs:
 workflows:
   maven-build:
     jobs:
-      - build-test-project 
+      - build-project
+      - test-project
     
