@@ -1,7 +1,5 @@
 version: 2.1
 
-orbs:
- maven: circleci/maven@1.3.0
 executors:
   docker-executor:
      docker:
@@ -14,7 +12,7 @@ executors:
      architecture: "amd64"
      platform: "linux/amd64"
 jobs:
-  build-project:
+  build-test-project:
     executor: docker-executor 
     steps:
       - checkout
@@ -26,14 +24,16 @@ jobs:
           command: mvn clean install -Dmaven.test.skip=true
       - run:
           name: Build Image
-          command: docker build .   
-
+          command: docker build .
+  maven-test:
+      executor: machine-executor
+      steps:
+         - checkout
+         - run:
+            name: run all test
+            command: mvn test    
 workflows:
   maven-build:
     jobs:
-      - build-project
-  maven-test:
-    jobs: 
-    - maven/test:
-        executor: machine-executor    
-  
+      - build-test-project 
+    
