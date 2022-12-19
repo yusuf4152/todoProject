@@ -20,7 +20,12 @@ jobs:
           name: save image
           command: |
            mkdir docker-image
-           docker save -o docker-image/image.tar todo    
+           docker save -o docker-image/image.tar todo 
+      - persist_to_workspace:
+          root: .
+          paths: 
+            - docker-image
+
 
 workflows:
   maven-build:
