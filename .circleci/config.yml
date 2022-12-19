@@ -14,7 +14,7 @@ jobs:
           command: mvn clean install -Dmaven.test.skip=true
       - run:
             name: run all test
-            command: mvn test         
+            command: mvn test -Dtest=!TodoRepositoryTest         
       - run:
           name: Build Image
           command: docker build .
