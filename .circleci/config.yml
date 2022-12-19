@@ -25,7 +25,15 @@ jobs:
           root: .
           paths: 
             - docker-image
-
+  test-project:
+    machine:
+      image: ubuntu-2004:202010-01 
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - run:
+            name: run all test
+            command: mvn test        
 
 workflows:
   maven-build-test:
@@ -35,5 +43,12 @@ workflows:
          branches:
            only:
             - master
+  checkout-test:
+    jobs:
+    - test-project:
+        filters:
+         branches:
+           ignore:
+            - master          
 
         
