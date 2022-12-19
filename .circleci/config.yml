@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-test-project:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: cimg/openjdk:11.0
     steps:
       - checkout
       - setup_remote_docker:
