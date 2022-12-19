@@ -1,10 +1,6 @@
 version: 2.1
 
 executors:
-  docker-executor:
-     docker:
-      - image: cimg/openjdk:11.0
-
   machine-executor:
     machine:
      image: ubuntu-2204:2022.04.2
@@ -12,9 +8,9 @@ executors:
      architecture: "amd64"
      platform: "linux/amd64"
 jobs:
-  build-project:
-    executor: docker-executor 
-    steps:
+  build-test-project:
+   executor: machine-executor
+   steps:
       - checkout
       - setup_remote_docker:
           version: 20.10.2 
@@ -23,18 +19,13 @@ jobs:
           name: Build
           command: mvn clean install -Dmaven.test.skip=true
       - run:
+            name: run all test
+            command: mvn test         
+      - run:
           name: Build Image
           command: docker build .
-  test-project:
-      executor: machine-executor
-      steps:
-         - checkout
-         - run:
-            name: run all test
-            command: mvn test    
+
 workflows:
   maven-build:
     jobs:
-      - build-project
-      - test-project
-    
+      - build-test-project
