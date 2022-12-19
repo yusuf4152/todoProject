@@ -1,16 +1,11 @@
 version: 2.1
 
-executors:
-  machine-executor:
-    machine:
-     image: ubuntu-2204:2022.04.2
-    environment:
-     architecture: "amd64"
-     platform: "linux/amd64"
 jobs:
   build-test-project:
-   executor: machine-executor
-   steps:
+    machine:
+      image: ubuntu-2004:202104-01
+      docker_layer_caching: true   
+    steps:
       - checkout
       - setup_remote_docker:
           version: 20.10.2 
