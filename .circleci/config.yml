@@ -2,9 +2,8 @@ version: 2.1
 
 jobs:
   build-test-project:
-    machine:
-      image: ubuntu-2004:202104-01
-      docker_layer_caching: true   
+    docker:
+      - image: circleci/openjdk:8-jdk
     steps:
       - checkout
       - setup_remote_docker:
