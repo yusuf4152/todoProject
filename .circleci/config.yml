@@ -28,6 +28,12 @@ jobs:
 
 
 workflows:
-  maven-build:
+  maven-build-test:
     jobs:
-      - build-test-project
+    - build-test-project:
+        filters:
+         branches:
+           only:
+            - master
+
+        
