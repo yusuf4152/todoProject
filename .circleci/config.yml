@@ -12,7 +12,7 @@ jobs:
           command: mvn clean install -P prod -Dmaven.test.skip=true 
       - run:
             name: run all test
-            command: mvn test -Dtest=TodoRepositoryTest -P prod      
+            command: mvn test -Dtest=!TodoRepositoryTest -P prod      
       - run:
           name: Build Image
           command: docker build -t todo .
