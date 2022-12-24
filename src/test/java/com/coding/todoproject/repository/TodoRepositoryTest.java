@@ -1,10 +1,7 @@
 package com.coding.todoproject.repository;
 
 import com.coding.todoproject.entity.Todo;
-import com.coding.todoproject.service.TodoService;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;

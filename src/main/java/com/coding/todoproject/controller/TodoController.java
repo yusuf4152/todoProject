@@ -42,7 +42,7 @@ public class TodoController {
     }
 
     @PutMapping("/updateTodoById")
-    public ResponseEntity<TodoGetDto> updateTodoById(TodoUpdateDto todoUpdateDto) {
+    public ResponseEntity<TodoGetDto> updateTodoById( @RequestBody TodoUpdateDto todoUpdateDto) {
         return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodoById(todoUpdateDto));
     }
 
