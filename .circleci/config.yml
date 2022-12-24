@@ -9,7 +9,7 @@ jobs:
       - checkout
       - run:
           name: Build
-          command: mvn clean install -Pprod -Dskip.test=true
+          command: mvn clean install -Dskip.test=true -Pprod
       - run:
             name: run all test
             command: mvn test -Dtest=TodoRepositoryTest        
