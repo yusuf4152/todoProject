@@ -9,10 +9,10 @@ jobs:
       - checkout
       - run:
           name: Build
-          command: mvn clean install -Dmaven.test.skip=true
+          command: mvn clean install -P prod -Dmaven.test.skip=true 
       - run:
             name: run all test
-            command: mvn test        
+            command: mvn test -Dtest=!TodoRepositoryTest -P prod      
       - run:
           name: Build Image
           command: docker build -t todo .
