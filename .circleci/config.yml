@@ -51,7 +51,7 @@ jobs:
             command: mvn test -P dev        
 
 workflows:
-  maven-build-test:
+  build-test-deploydockerhub:
     jobs:
     - build-test-project:
         context: deneme
