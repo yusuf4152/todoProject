@@ -1,11 +1,4 @@
 version: 2.1
-executors:
-  docker-publisher:
-    environment:
-      IMAGE_NAME: yusufislamdemir/todoproject
-    docker:
-      - image: circleci/buildpack-deps:stretch
-
 jobs:
   build-test-project:
     machine:
@@ -20,12 +13,9 @@ jobs:
             name: run all test
             command: mvn test -P prod
       - run:
-            name: docker-build-save
+            name: docker-build
             command: | 
-             docker build -t $IMAGE_NAME:latest .
-      - run:
-          name: Archive Docker image
-          command: docker save -o image.tar $IMAGE_NAME
+             docker build -t yusufislamdemir/todoproject:latest .
       - persist_to_workspace:
           root: .
           paths:
