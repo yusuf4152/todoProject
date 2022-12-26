@@ -1,10 +1,4 @@
 version: 2.1
-executors:
-  docker-publisher:
-    environment:
-      IMAGE_NAME: todoproject
-    docker:
-      - image: circleci/buildpack-deps:stretch
 jobs:
   build-test-project:
     machine:
@@ -24,7 +18,7 @@ jobs:
              docker build -t todoproject .
       - run:
           name: Archive Docker image
-          command: docker save -o image.tar todoproject
+          command: docker save -o image.tar $docker_username/todoproject
       - persist_to_workspace:
           root: .
           paths:
