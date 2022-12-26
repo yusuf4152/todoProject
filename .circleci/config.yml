@@ -7,10 +7,8 @@ executors:
       - image: circleci/buildpack-deps:stretch
 
 jobs:
-  mavenbuild-test-project:
-    machine:
-      image: ubuntu-2004:202010-01 
-      docker_layer_caching: true
+  build-test-project:
+    executor: docker-publisher  
     steps:
       - checkout
       - run:
@@ -18,17 +16,11 @@ jobs:
           command: mvn clean install -P prod -Dmaven.test.skip=true 
       - run:
             name: run all test
-            command: mvn test -P prod    
-              
-  docker-build:
-    executor: docker-publisher
-    steps:
-      - checkout
-      - setup_remote_docker
+            command: mvn test -P prod
       - run:
-          name: Build Docker image
-          command: |
-            docker build -t $IMAGE_NAME:latest .
+            name: docker-build-save
+            command: | 
+             docker build -t $IMAGE_NAME:latest .
       - run:
           name: Archive Docker image
           command: docker save -o image.tar $IMAGE_NAME
@@ -36,8 +28,8 @@ jobs:
           root: .
           paths:
             - ./image.tar
+               
 
-  
   test-project:
     machine:
       image: ubuntu-2004:202010-01 
@@ -51,18 +43,11 @@ jobs:
 workflows:
   maven-build-test:
     jobs:
-    - mavenbuild-test-project:
+    - build-test-project:
         filters:
          branches:
            only:
-            - master
-    - docker-build:
-          requires:
-            - mavenbuild-test-project  
-          filters:
-           branches:
-            only:
-             - master            
+            - master          
   
   checkout-test:
     jobs:
