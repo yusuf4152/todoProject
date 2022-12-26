@@ -1,4 +1,10 @@
 version: 2.1
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: todoproject
+    docker:
+      - image: circleci/buildpack-deps:stretch
 jobs:
   build-test-project:
     machine:
@@ -25,7 +31,22 @@ jobs:
           root: .
           paths:
           - docker-image
-               
+
+  push-dockerhub-project:
+    machine:
+      image: ubuntu-2004:202010-01 
+      docker_layer_caching: true
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Load archived Docker image
+          command: docker load -i ./docker-image/image.tar todoproject
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$docker_password" | docker login -u "$docker_username" --password-stdin
+            docker push todoproject             
 
   test-project:
     machine:
@@ -45,7 +66,14 @@ workflows:
          branches:
            only:
             - master          
-  
+    - push-dockerhub-project:
+        requires:
+          - build-test-project
+        filters:
+         branches:
+           only:
+            - master
+
   checkout-test:
     jobs:
     - test-project:
