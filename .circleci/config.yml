@@ -54,6 +54,7 @@ workflows:
   maven-build-test:
     jobs:
     - build-test-project:
+        context: deneme
         filters:
          branches:
            only:
