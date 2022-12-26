@@ -15,7 +15,7 @@ jobs:
       - run:
             name: docker-build
             command: | 
-             docker build -t todoproject .
+             docker build -t $docker_username/todoproject .
       - run:
           name: Archive Docker image
           command: docker save -o image.tar $docker_username/todoproject
