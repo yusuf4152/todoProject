@@ -44,7 +44,7 @@ jobs:
           name: Publish Docker Image to Docker Hub
           command: |
             echo "$docker_password" | docker login -u "$docker_username" --password-stdin
-            docker push todoproject             
+            docker push $docker_username/todoproject             
 
   test-project:
     machine:
