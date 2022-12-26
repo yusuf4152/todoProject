@@ -1,30 +1,43 @@
 version: 2.1
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: yusufislamdemir/todoproject
+    docker:
+      - image: circleci/buildpack-deps:stretch
 
 jobs:
-  build-test-project:
+  mavenbuild-test-project:
     machine:
       image: ubuntu-2004:202010-01 
       docker_layer_caching: true
     steps:
       - checkout
       - run:
-          name: Build
+          name: maven Build
           command: mvn clean install -P prod -Dmaven.test.skip=true 
       - run:
             name: run all test
-            command: mvn test -P prod      
+            command: mvn test -P prod    
+              
+  docker-build:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
       - run:
-          name: Build Image
-          command: docker build -t todo .
-      - run:
-          name: save image
+          name: Build Docker image
           command: |
-           mkdir docker-image
-           docker save -o docker-image/image.tar todo 
+            docker build -t $IMAGE_NAME:latest .
+      - run:
+          name: Archive Docker image
+          command: docker save -o image.tar $IMAGE_NAME
       - persist_to_workspace:
           root: .
-          paths: 
-            - docker-image
+          paths:
+            - ./image.tar
+
+  
   test-project:
     machine:
       image: ubuntu-2004:202010-01 
@@ -33,16 +46,24 @@ jobs:
       - checkout
       - run:
             name: run all test
-            command: mvn test        
+            command: mvn test -P dev        
 
 workflows:
   maven-build-test:
     jobs:
-    - build-test-project:
+    - mavenbuild-test-project:
         filters:
          branches:
            only:
             - master
+    - docker-build:
+          requires:
+            - mavenbuild-test-project  
+          filters:
+           branches:
+            only:
+             - master            
+  
   checkout-test:
     jobs:
     - test-project:
