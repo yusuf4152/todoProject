@@ -67,6 +67,7 @@ workflows:
            only:
             - master          
     - push-dockerhub-project:
+        context: deneme
         requires:
           - build-test-project
         filters:
