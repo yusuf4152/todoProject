@@ -1,5 +1,4 @@
 version: 2.1
-
 jobs:
   build-test-project:
     machine:
@@ -8,23 +7,39 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build
+          name: maven Build
           command: mvn clean install -P prod -Dmaven.test.skip=true 
       - run:
             name: run all test
-            command: mvn test -Dtest=!TodoRepositoryTest -P prod      
+            command: mvn test -P prod
       - run:
-          name: Build Image
-          command: docker build -t todo .
+            name: docker-build
+            command: | 
+             docker build -t $docker_username/todoproject .
       - run:
-          name: save image
-          command: |
-           mkdir docker-image
-           docker save -o docker-image/image.tar todo 
+          name: Archive Docker image
+          command: docker save -o image.tar $docker_username/todoproject
       - persist_to_workspace:
           root: .
-          paths: 
-            - docker-image
+          paths:
+            - ./image.tar
+
+  push-dockerhub-project:
+    machine:
+      image: ubuntu-2004:202010-01 
+      docker_layer_caching: true
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$docker_password" | docker login -u "$docker_username" --password-stdin
+            docker push $docker_username/todoproject             
+
   test-project:
     machine:
       image: ubuntu-2004:202010-01 
@@ -33,16 +48,26 @@ jobs:
       - checkout
       - run:
             name: run all test
-            command: mvn test        
+            command: mvn test -P dev        
 
 workflows:
-  maven-build-test:
+  build-test-deploydockerhub:
     jobs:
     - build-test-project:
+        context: deneme
+        filters:
+         branches:
+           only:
+            - master          
+    - push-dockerhub-project:
+        context: deneme
+        requires:
+          - build-test-project
         filters:
          branches:
            only:
             - master
+
   checkout-test:
     jobs:
     - test-project:
